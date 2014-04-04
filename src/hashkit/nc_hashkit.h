@@ -39,6 +39,7 @@
     ACTION( DIST_KETAMA,        ketama        ) \
     ACTION( DIST_MODULA,        modula        ) \
     ACTION( DIST_RANDOM,        random        ) \
+    ACTION( DIST_DIRECT,        direct        ) \
 
 #define DEFINE_ACTION(_hash, _name) _hash,
 typedef enum hash_type {

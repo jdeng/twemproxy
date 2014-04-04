@@ -632,6 +632,28 @@ server_pool_server(struct server_pool *pool, uint8_t *key, uint32_t keylen)
         idx = random_dispatch(pool->continuum, pool->ncontinuum, 0);
         break;
 
+    case DIST_DIRECT:
+        {
+            uint32_t nserver = array_n(&pool->server);
+            uint32_t server_index;
+            idx = 0;
+            for (server_index = 0; server_index < nserver; server_index++) {
+                struct server *aserver = array_get(&pool->server, server_index);
+                if (aserver->pname.len != keylen) 
+                    continue;
+                if (nc_strncmp(key, aserver->pname.data, keylen) == 0) {
+                    idx = server_index;
+                    break;
+                }
+            }
+
+            if (server_index >= nserver) {
+                log_debug(LOG_VERB, "key '%.*s' on dist %d has no direct server", keylen,
+                    key, pool->dist_type);
+            }
+        }        
+        break;
+
     default:
         NOT_REACHED();
         return NULL;
